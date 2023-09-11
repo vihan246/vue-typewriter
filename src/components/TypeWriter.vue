@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="text-align: left">
     <span> {{ displayStr }} </span>{{ cursorStr }}
   </div>
 </template>
