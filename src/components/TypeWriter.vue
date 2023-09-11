@@ -1,7 +1,5 @@
 <template>
-  <div style="text-align: left">
-    <span> {{ displayStr }} </span>{{ cursorStr }}
-  </div>
+  <span> {{ displayStr }}{{ cursorStr }} </span>
 </template>
 <script>
 import { ref } from "vue";

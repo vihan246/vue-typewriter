@@ -1,6 +1,6 @@
 <template>
   <div class="demo-container">
-    <TypeWriter
+    This is <TypeWriter
       class="demo"
       :text="listOfStrings"
       delete="type"
@@ -17,7 +17,7 @@ export default {
   name: "App",
   components: { TypeWriter },
   setup() {
-    const listOfStrings = ["Demo text", "Vue component", "abcdef"];
+    const listOfStrings = ["Demo text", "a vue component", "a typewriter"];
     return {
       listOfStrings,
     };
@@ -38,10 +38,10 @@ export default {
 .demo-container {
   width: 100%;
   height: 400px;
+  text-align: left;
 }
 .demo {
   font-size: large;
-  width: 200px;
   height: 100px;
 }
 </style>
