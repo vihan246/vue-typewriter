@@ -5,7 +5,7 @@ Vue3 typewrite component! The typewriter inserts text into a span to allow for i
 Props: 
 - text: Can be a string or an array of strings. If it's an array of strings, the typewriter will cycle through the strings from 0 -> len (repeating back to 0 if repeats prop is true).
 - delete: Can be either 'full' or 'type'. 'full' will cause the typewriter to delete the entire string upon completion of the typing. 'type' will cause the same typing effect to occur during deletion. 
-- repeats: Defaults to false. Decides whether text should repeatedly print and delete. If false, typewriter emits 'done' upon completion. 
+- repeats: Defaults to false. Decides whether text should repeatedly print and delete. *If false, typewriter emits 'done' upon completion*. 
 - speed: Defaults to 100ms.  Determines how long the typewriter will wait between printing each character (or deleting each character if delete is set to type).
 - waitAfterWrite: Defaults to 1500ms. Determines the amount of time the typewriter will wait before deleting a completed string. 
 - waitAfterDelete: Defaults to 300ms. Determines how long the typewriter waits after deleting the string. 
