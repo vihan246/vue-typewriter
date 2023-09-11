@@ -81,7 +81,11 @@ export default {
       } else {
         blinkTimeElapsed = 0;
         cursorStr.value = "_";
-        multiTypeWriter();
+        if (props.text) {
+          multiTypeWriter();
+        } else if (props.repeats) {
+          cursorBlink(timeToBlink);
+        }
       }
     };
 
