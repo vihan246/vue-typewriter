@@ -1,6 +1,12 @@
 <template>
   <div class="demo-container">
-    <TypeWriter class="demo" :text="listOfStrings" delete="type" repeats />
+    <TypeWriter
+      class="demo"
+      :text="listOfStrings"
+      delete="type"
+      repeats
+      cursor
+    />
   </div>
 </template>
 
@@ -35,7 +41,7 @@ export default {
 }
 .demo {
   font-size: large;
-  width: 100px;
+  width: 200px;
   height: 100px;
 }
 </style>

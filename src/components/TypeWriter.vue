@@ -1,7 +1,7 @@
 <template>
-  <span>
-    {{ displayStr }}
-  </span>
+  <div style="text-align: left">
+    <span> {{ displayStr }} </span>{{ cursorStr }}
+  </div>
 </template>
 <script>
 import { ref } from "vue";
@@ -18,11 +18,11 @@ export default {
     },
     waitAfterWrite: {
       type: Number,
-      default: 1000,
+      default: 1500,
     },
     waitAfterDelete: {
       type: Number,
-      default: 200,
+      default: 300,
     },
     /**
      * Prop for multi-word typewriter. Defines whether each word is
@@ -49,13 +49,41 @@ export default {
       type: Boolean,
       default: false,
     },
+    /**
+     * Add cursor
+     */
+    cursor: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ["done"],
   setup(props, { emit }) {
     const displayStr = ref("");
+    const cursorStr = ref(" ");
     var i = 0;
     var counter = 0;
     var flip = false;
+
+    const blinkGap = 450;
+    let blinkTimeElapsed = 0;
+    const cursorBlink = (timeToBlink) => {
+      if (blinkTimeElapsed < timeToBlink) {
+        if (cursorStr.value === "_") {
+          cursorStr.value = " ";
+        } else {
+          cursorStr.value = "_";
+        }
+        blinkTimeElapsed += blinkGap;
+        setTimeout(() => {
+          cursorBlink(timeToBlink);
+        }, blinkGap);
+      } else {
+        blinkTimeElapsed = 0;
+        cursorStr.value = "_";
+        multiTypeWriter();
+      }
+    };
 
     const multiTypeWriter = () => {
       const currString = Array.isArray(props.text)
@@ -64,17 +92,12 @@ export default {
 
       if (!flip && i < currString.length) {
         // add next character in string
-        displayStr.value =
-          displayStr.value.substring(0, displayStr.value.length - 1) +
-          currString[i] +
-          "_";
+        displayStr.value = displayStr.value + currString[i];
         i++;
         if (i === currString.length) {
           // if we've printed all the characters in the current string, flip direction
           flip = true;
-          setTimeout(() => {
-            multiTypeWriter();
-          }, props.waitAfterWrite);
+          cursorBlink(props.waitAfterWrite);
         } else {
           setTimeout(() => {
             multiTypeWriter();
@@ -82,15 +105,17 @@ export default {
         }
       } else if (props.delete === "type" && i > -1) {
         // remove characters at the end one at a time.
-        displayStr.value =
-          displayStr.value.substring(0, displayStr.value.length - 2) + "_";
+        displayStr.value = displayStr.value.substring(
+          0,
+          displayStr.value.length - 1
+        );
         i--;
         setTimeout(() => {
           multiTypeWriter();
         }, props.speed + (props.humanize ? Math.random() * 100 : 1));
       } else {
         // delete entire typed string immediately.
-        displayStr.value = "_";
+        displayStr.value = "";
         i = 0;
         flip = false;
         counter++;
@@ -98,20 +123,18 @@ export default {
           counter = 0;
         }
         if (props.repeats || counter !== 0) {
-          setTimeout(() => {
-            multiTypeWriter();
-          }, props.waitAfterDelete);
+          cursorBlink(props.waitAfterDelete);
         } else {
           emit("done");
         }
       }
     };
-    setTimeout(() => {
-      multiTypeWriter();
-    }, props.waitAfterWrite);
+
+    cursorBlink(props.waitAfterWrite);
+
     return {
       displayStr,
-      multiTypeWriter,
+      cursorStr,
     };
   },
 };
