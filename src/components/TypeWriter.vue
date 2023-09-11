@@ -118,9 +118,11 @@ export default {
         displayStr.value = "";
         i = 0;
         flip = false;
-        counter++;
-        if (Array.isArray(props.text) && counter === props.text.length) {
-          counter = 0;
+        if (Array.isArray(props.text)) {
+          counter++;
+          if (counter === props.text.length) {
+            counter = 0;
+          }
         }
         if (props.repeats || counter !== 0) {
           cursorBlink(props.waitAfterDelete);
