@@ -1,8 +1,10 @@
 <template>
-  <span>{{ displayStr }}</span>
+  <span>
+    {{ displayStr }}
+  </span>
 </template>
 <script>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 export default {
   name: "TypeWriter",
   props: {
@@ -45,7 +47,7 @@ export default {
      */
     repeats: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   emits: ["done"],
@@ -56,7 +58,7 @@ export default {
     var flip = false;
 
     const multiTypeWriter = () => {
-      const currString = props.text.isArray()
+      const currString = Array.isArray(props.text)
         ? props.text[counter]
         : props.text;
 
@@ -70,45 +72,46 @@ export default {
         if (i === currString.length) {
           // if we've printed all the characters in the current string, flip direction
           flip = true;
-          setTimeout(() => multiTypeWriter, props.waitAfterWrite);
+          setTimeout(() => {
+            multiTypeWriter();
+          }, props.waitAfterWrite);
         } else {
-          setTimeout(
-            () => multiTypeWriter,
-            props.speed * (props.humanize ? Math.random() * 100 : 1)
-          );
+          setTimeout(() => {
+            multiTypeWriter();
+          }, props.speed + (props.humanize ? Math.random() * 100 : 0));
         }
       } else if (props.delete === "type" && i > -1) {
         // remove characters at the end one at a time.
         displayStr.value =
           displayStr.value.substring(0, displayStr.value.length - 2) + "_";
         i--;
-        setTimeout(
-          () => multiTypeWriter,
-          props.speed * (props.humanize ? Math.random() * 100 : 1)
-        );
+        setTimeout(() => {
+          multiTypeWriter();
+        }, props.speed + (props.humanize ? Math.random() * 100 : 1));
       } else {
         // delete entire typed string immediately.
         displayStr.value = "_";
         i = 0;
         flip = false;
         counter++;
-        if (!props.text.isArray() || counter === props.text.length) {
-          if (props.repeats) {
-            counter = 0;
-            setTimeout(() => multiTypeWriter, props.waitAfterDelete);
-          } else {
-            emit("done");
-          }
+        if (Array.isArray(props.text) && counter === props.text.length) {
+          counter = 0;
+        }
+        if (props.repeats || counter !== 0) {
+          setTimeout(() => {
+            multiTypeWriter();
+          }, props.waitAfterDelete);
+        } else {
+          emit("done");
         }
       }
     };
-
-    onMounted(() => {
-      setTimeout(() => multiTypeWriter, props.waitAfterDelete);
-    });
-
+    setTimeout(() => {
+      multiTypeWriter();
+    }, props.waitAfterWrite);
     return {
       displayStr,
+      multiTypeWriter,
     };
   },
 };
